@@ -1,33 +1,7 @@
 import {
   HastNode,
-  HastElementNode,
+  HastBodyNode,
 } from './types';
-
-const containsText = (node: HastNode): boolean => {
-  if (node.type === 'text') {
-    return node.value ? node.value.length > 0 : false;
-  } else if (node.children && node.children.length > 0) {
-    return node.children.some(containsText);
-  } else {
-    return false;
-  }
-}
-
-export const singleLineHastFromNullableBody = (value: any): HastElementNode => {
-  if (!value) {
-    return {
-      type: 'element',
-      tagName: 'body',
-      children: [],
-    }
-  } else {
-    return value;
-  }
-};
-
-export const hastToNullableBody = (bodyNode: HastNode): any => {
-  return containsText(bodyNode) ? bodyNode : null;
-};
 
 export const stripHastDebug = (node: HastNode): HastNode => {
   if (node.type === 'text') {
@@ -49,8 +23,9 @@ export const stripHastDebug = (node: HastNode): HastNode => {
     ...node.children && { children: node.children.map(stripHastDebug) },
     ...properties && { properties },
   };
-}
+};
 
+/** Remove all unnecessary properties from hast document */
 export const compressHast = (node: HastNode): HastNode => {
   if (node.type === 'text') {
     return node;
@@ -62,13 +37,4 @@ export const compressHast = (node: HastNode): HastNode => {
     ...node.properties && Object.keys(node.properties).length && { properties: node.properties },
     ...node.children && node.children.length && { children: node.children.map(compressHast) },
   };
-}
-
-export const stringToHastBody = (text: string): HastElementNode => ({
-  type: 'element',
-  tagName: 'body',
-  children: [{
-    type: 'text',
-    value: text,
-  }]
-});
+};
