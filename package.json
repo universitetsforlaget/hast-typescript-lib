@@ -1,5 +1,5 @@
 {
-  "name": "hast",
+  "name": "@universitetsforlaget/hast",
   "version": "0.1.0",
   "description": "Hypertext Abstract Syntax Tree utilities",
   "main": "./dist/index.js",
