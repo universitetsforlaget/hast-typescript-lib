@@ -6,5 +6,8 @@
   "types": "./dist/types.d.ts",
   "repository": "https://github.com/universitetsforlaget/hast-typescript-lib",
   "author": "Audun Halland <audun.halland@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^3.3.4000"
+  }
 }
