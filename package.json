@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Hypertext Abstract Syntax Tree utilities",
   "main": "./dist/index.js",
-  "types": "./dist/types.d.ts",
+  "types": "./dist/index.d.ts",
   "repository": "https://github.com/universitetsforlaget/hast-typescript-lib",
   "author": "Audun Halland <audun.halland@gmail.com>",
   "license": "MIT",
