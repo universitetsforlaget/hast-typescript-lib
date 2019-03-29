@@ -1,9 +1,8 @@
 import {
   HastNode,
-  HastBodyNode,
   HastProperties
 } from './types';
-import { compressBodyNode, compressElementNode } from './util';
+import { compressElementNode } from './util';
 
 const hastPropertyOfAttr = (attrib: Attr): HastProperties => {
   switch (attrib.name) {

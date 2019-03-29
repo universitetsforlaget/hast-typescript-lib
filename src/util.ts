@@ -3,7 +3,6 @@ import {
   HastNode,
   HastElementNode,
   HastBodyNode,
-  HastTextNode,
 } from './types';
 
 export const stripHastDebug = (node: HastNode): HastNode => {
