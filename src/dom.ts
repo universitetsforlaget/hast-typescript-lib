@@ -1,4 +1,5 @@
 import {
+  ContentType,
   HastNode,
   HastProperties
 } from './types';
@@ -17,7 +18,10 @@ const hastPropertyOfAttr = (attrib: Attr): HastProperties => {
   }
 }
 
-const hastOfElement = (element: Element): HastNode => {
+const hastOfElement = (
+  element: Element,
+  contentType: ContentType,
+): HastNode => {
   if (element.nodeType === element.TEXT_NODE) {
     return {
       type: 'text',
@@ -35,18 +39,21 @@ const hastOfElement = (element: Element): HastNode => {
 
     return compressElementNode({
       type: 'element',
-      tagName: element.tagName.toLowerCase(),
+      tagName: contentType === 'text/html' ? element.tagName.toLowerCase() : element.tagName,
       properties,
-      children: hastChildrenOfElement(element),
+      children: hastChildrenOfElement(element, contentType),
     });
   }
 }
 
-export const hastChildrenOfElement = (element: Element): HastNode[] => {
+export const hastChildrenOfElement = (
+  element: Element,
+  contentType: ContentType,
+): HastNode[] => {
   const hastNodes: HastNode[] = [];
   for (let i = 0; i < element.childNodes.length; i += 1) {
     const childNode = element.childNodes[i];
-    const hastNode = hastOfElement(childNode as Element);
+    const hastNode = hastOfElement(childNode as Element, contentType);
     hastNodes.push(hastNode);
   }
   return hastNodes;

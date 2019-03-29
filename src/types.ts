@@ -1,3 +1,5 @@
+export type ContentType = 'text/html' | 'application/xml';
+
 export interface HastProperties {
   className?: string[],
   [key: string]: any,
