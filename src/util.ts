@@ -48,7 +48,8 @@ export const compressBodyNode = (node: HastBodyNode): HastBodyNode => {
 
 export const compressElementNode = (node: HastElementNode): HastElementNode => {
   return {
-    ...node,
+    type: 'element',
+    tagName: node.tagName,
     ...compressProperties(node.properties),
     ...compressChildren(node.children),
   };

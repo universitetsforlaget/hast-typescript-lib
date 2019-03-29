@@ -18,7 +18,7 @@ const hastPropertyOfAttr = (attrib: Attr): HastProperties => {
   }
 }
 
-const hastOfElement = (
+export const hastOfElement = (
   element: Element,
   contentType: ContentType,
 ): HastNode => {
@@ -41,20 +41,22 @@ const hastOfElement = (
       type: 'element',
       tagName: contentType === 'text/html' ? element.tagName.toLowerCase() : element.tagName,
       properties,
-      children: hastChildrenOfElement(element, contentType),
+      children: hastChildrenOfNode(element, contentType),
     });
   }
 }
 
-export const hastChildrenOfElement = (
-  element: Element,
+export const hastChildrenOfNode = (
+  node: Node,
   contentType: ContentType,
 ): HastNode[] => {
   const hastNodes: HastNode[] = [];
-  for (let i = 0; i < element.childNodes.length; i += 1) {
-    const childNode = element.childNodes[i];
-    const hastNode = hastOfElement(childNode as Element, contentType);
-    hastNodes.push(hastNode);
+  if (node.hasChildNodes()) {
+    for (let i = 0; i < node.childNodes.length; i += 1) {
+      const childNode = node.childNodes[i];
+      const hastNode = hastOfElement(childNode as Element, contentType);
+      hastNodes.push(hastNode);
+    }
   }
   return hastNodes;
 };
