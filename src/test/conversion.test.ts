@@ -1,7 +1,7 @@
 import { DOMParser } from 'xmldom';
 import { domElementToHastBody } from '../conversion';
 
-describe('dom', () => {
+describe('conversion', () => {
   it('converts html document', () => {
     const doc = new DOMParser().parseFromString('<span>Some <STRONG>text</STRONG></span>', 'text/html');
     const hast = domElementToHastBody(doc, 'text/html');
