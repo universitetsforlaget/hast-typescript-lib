@@ -73,6 +73,14 @@ export const compressDocument = (node: HastNode): HastNode => {
   return {
     ...node,
     ...compressProperties(node.properties),
-    ...node.children && node.children.length && { children: node.children.map(compressDocument) },
+    ...node.children && compressChildren(node.children.map(compressDocument)),
+  };
+};
+
+export const compressDocumentBody = (node: HastBodyNode): HastBodyNode => {
+  return {
+    type: 'element',
+    tagName: 'body',
+    ...compressChildren(node.children),
   };
 };
