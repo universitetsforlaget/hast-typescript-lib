@@ -2,9 +2,9 @@ import { HastNode, HastElementNode, HastProperties } from "./types";
 
 const encodeUtf8Text = (text: string): string =>
   text
+    .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/&/g, '&amp;');
+    .replace(/>/g, '&gt;');
 
 const encodeUtf8AttributeValue = (text: string): string =>
   text.replace(/"/g, '&quot;');

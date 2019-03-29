@@ -8,7 +8,8 @@
   "author": "Audun Halland <audun.halland@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "echo lol",
+    "test": "jest",
+    "tdd": "jest --watch",
     "build": "tsc"
   },
   "devDependencies": {
