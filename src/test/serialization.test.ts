@@ -36,11 +36,18 @@ describe('serialization', () => {
         value: 'tekst',
       }, {
         type: 'element',
-        tagName: 'br'
+        tagName: 'br',
+      }, {
+        type: 'element',
+        tagName: 'strong',
+        children: [{
+          type: 'text',
+          value: 'yo',
+        }]
       }],
     });
     expect(html).toEqual(
-      '<p class="yo">tekst<br /></p>'
+      '<p class="yo">tekst<br/><strong>yo</strong></p>'
     );
   });
 });

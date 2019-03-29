@@ -9,22 +9,21 @@ const encodeUtf8Text = (text: string): string =>
 const encodeUtf8AttributeValue = (text: string): string =>
   text.replace(/"/g, '&quot;');
 
-const hastPropertiesToUtf8Attributes = (properties?: HastProperties): string => {
+const hastPropertiesToUtf8Attributes = (properties?: HastProperties): string[] => {
   if (!properties) {
-    return '';
+    return [];
   }
 
   return Object.keys(properties)
-    .map(key => `${key}="${encodeUtf8AttributeValue(properties[key])}"`)
-    .join(' ');
+    .map(key => `${key}="${encodeUtf8AttributeValue(properties[key])}"`);
 };
 
 const hastElementNodeToUtf8Markup = (node: HastElementNode): string => {
   const attributes = hastPropertiesToUtf8Attributes(node.properties);
   if (node.children && node.children.length > 0) {
-    return `<${node.tagName} ${attributes}>${node.children.map(hastNodeToUtf8Markup).join('')}</${node.tagName}>`;
+    return `<${[node.tagName, ...attributes].join(' ')}>${node.children.map(hastNodeToUtf8Markup).join('')}</${node.tagName}>`;
   } else {
-    return `<${node.tagName} ${attributes}/>`;
+    return `<${[node.tagName, ...attributes].join(' ')}/>`;
   }
 };
 
