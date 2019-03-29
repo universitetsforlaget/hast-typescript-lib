@@ -1,6 +1,6 @@
 {
   "name": "@universitetsforlaget/hast",
-  "version": "0.1.4-SNAPSHOT",
+  "version": "0.2.0-SNAPSHOT",
   "description": "Hypertext Abstract Syntax Tree utilities",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -8,10 +8,16 @@
   "author": "Audun Halland <audun.halland@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "echo lol",
+    "test": "jest",
+    "tdd": "jest --watch",
     "build": "tsc"
   },
   "devDependencies": {
-    "typescript": "^3.3.4000"
+    "@types/jest": "^24.0.11",
+    "@types/xmldom": "^0.1.29",
+    "jest": "^24.5.0",
+    "ts-jest": "^24.0.0",
+    "typescript": "^3.3.4000",
+    "xmldom": "^0.1.27"
   }
 }
