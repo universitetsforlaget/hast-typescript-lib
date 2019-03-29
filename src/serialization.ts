@@ -1,16 +1,13 @@
 import { HastNode, HastElementNode, HastProperties } from "./types";
 
-const encodeUtf8Text = (text: string): string => {
-  return text
+const encodeUtf8Text = (text: string): string =>
+  text
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/&/g, '&amp;');
-}
 
-const encodeUtf8AttributeValue = (text: string): string => {
-  return text
-    .replace(/"/g, '&quot;');
-}
+const encodeUtf8AttributeValue = (text: string): string =>
+  text.replace(/"/g, '&quot;');
 
 const hastPropertiesToUtf8Attributes = (properties?: HastProperties): string => {
   if (!properties) {
@@ -20,7 +17,7 @@ const hastPropertiesToUtf8Attributes = (properties?: HastProperties): string => 
   return Object.keys(properties)
     .map(key => `${key}="${encodeUtf8AttributeValue(properties[key])}"`)
     .join(' ');
-}
+};
 
 const hastElementNodeToUtf8Markup = (node: HastElementNode): string => {
   const attributes = hastPropertiesToUtf8Attributes(node.properties);
@@ -29,7 +26,7 @@ const hastElementNodeToUtf8Markup = (node: HastElementNode): string => {
   } else {
     return `<${node.tagName} ${attributes}/>`;
   }
-}
+};
 
 export const hastNodeToUtf8Markup = (node: HastNode): string => {
   if (node.type === 'text') {
