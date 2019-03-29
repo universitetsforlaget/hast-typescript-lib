@@ -12,6 +12,7 @@
     "build": "tsc"
   },
   "devDependencies": {
+    "jest": "^24.5.0",
     "typescript": "^3.3.4000"
   }
 }
