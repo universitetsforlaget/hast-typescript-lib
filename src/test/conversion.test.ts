@@ -1,11 +1,13 @@
 import { DOMParser } from 'xmldom';
-import { domNodeToHast } from '../conversion';
+
+import * as conversion from '../conversion';
 
 describe('conversion', () => {
   it('converts html document', () => {
     const doc = new DOMParser().parseFromString('<span>Some <STRONG>text</STRONG></span>', 'text/html');
-    const hast = domNodeToHast(doc, 'text/html');
-    expect(hast).toEqual({
+    const fragment = conversion.domNodeToHastFragment(doc, 'text/html');
+
+    expect(fragment).toEqual({
       type: 'element',
       tagName: 'fragment',
       children: [{

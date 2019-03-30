@@ -1,13 +1,18 @@
 import { DOMParser } from 'xmldom';
 
-import { elementToHast } from '../dom';
+import * as dom from '../dom';
+
+const XML_DOC = new DOMParser().parseFromString('<Yo />', 'text/xml');
 
 describe('dom', () => {
+  it('does not convert document to hast', () => {
+    expect(dom.nodeToHast(XML_DOC, 'application/xml')).toEqual(null);
+  });
+
   it('converts xml document to hast, retains tagName casing', () => {
-    const doc = new DOMParser().parseFromString('<Yo />', 'text/xml');
-    const hast = elementToHast(
-      doc.childNodes[0] as Element,
-      'application/xml'
+    const hast = dom.nodeToHast(
+      XML_DOC.childNodes[0],
+      'application/xml',
     );
     expect(hast).toEqual({
       type: 'element',

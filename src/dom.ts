@@ -50,9 +50,14 @@ export const nodeToHast = (
   node: Node,
   contentType: ContentType,
 ): HastNode | null => {
-  if (node instanceof HTMLElement) {
-    return elementToHast(node, contentType);
+  if (node.nodeType === node.TEXT_NODE) {
+    return node.nodeValue
+      ? { type: 'text', value: node.nodeValue }
+      : null;
+  } else if (node.nodeType === node.ELEMENT_NODE) {
+    return elementToHast(node as Element, contentType);
   }
+
   return null;
 };
 
