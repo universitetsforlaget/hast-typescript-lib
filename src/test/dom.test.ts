@@ -1,10 +1,11 @@
 import { DOMParser } from 'xmldom';
-import { hastOfElement } from '../dom';
+
+import { elementToHast } from '../dom';
 
 describe('dom', () => {
-  it('converts xml document to hast, retains tagname casing', () => {
+  it('converts xml document to hast, retains tagName casing', () => {
     const doc = new DOMParser().parseFromString('<Yo />', 'text/xml');
-    const hast = hastOfElement(
+    const hast = elementToHast(
       doc.childNodes[0] as Element,
       'application/xml'
     );

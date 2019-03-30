@@ -1,33 +1,36 @@
 import {
-  HastFragmentNode, ContentType,
+  HastNode,
+  HastTextNode,
+  HastFragmentNode,
+  ContentType,
 } from './types';
+import * as dom from './dom';
+import * as serialization from './serialization';
 import { compressFragmentNode } from './util';
-import { hastChildrenOfNode } from './dom';
-import { hastNodeToUtf8Markup } from './serialization';
 
-/** Convert plaintext string to hast fragment */
-export const stringToHastFragment = (text: string): HastFragmentNode => ({
-  type: 'element',
-  tagName: 'fragment',
-  children: [{
-    type: 'text',
-    value: text,
-  }]
+/** Convert plaintext string to hast text node */
+export const stringToHast = (text: string): HastTextNode => ({
+  type: 'text',
+  value: text,
 });
 
-/** Convert any dom Element to hast fragment */
-export const domElementToHastFragment = (
-  root: Node,
+/** Convert any dom node to hast, if possible */
+export const domNodeToHast = (
+  node: Node,
+  contentType: ContentType,
+): HastNode | null => dom.nodeToHast(node, contentType);
+
+/** Convert a dom node's content to a hast fragment */
+export const domNodeToHastFragment = (
+  node: Node,
   contentType: ContentType,
 ): HastFragmentNode => compressFragmentNode({
   type: 'element',
   tagName: 'fragment',
-  children: hastChildrenOfNode(root, contentType),
+  children: dom.nodeChildrenToHastArray(node, contentType),
 });
 
-/** Convert any hast fragment to "flattened" html5 (fragment node is stripped) */
-export const hastFragmentToFlattenedHtml5 = (fragment: HastFragmentNode): string => {
-  return fragment.children
-    ? fragment.children.map(hastNodeToUtf8Markup).join('')
-    : '';
+/** Convert hast to html5 string (fragment nodes will be stripped) */
+export const hastToHtml5 = (node: HastNode): string => {
+  return serialization.hastNodeToUtf8Markup(node);
 };

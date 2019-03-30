@@ -32,5 +32,12 @@ export const hastNodeToUtf8Markup = (node: HastNode): string => {
     return encodeUtf8Text(node.value);
   }
 
+  if (node.tagName === 'fragment') {
+    if (node.children) {
+      return node.children.map(hastNodeToUtf8Markup).join('');
+    }
+    return '';
+  }
+
   return hastElementNodeToUtf8Markup(node);
 };
