@@ -5,22 +5,35 @@ import {
 } from './types';
 import { compressElementNode } from './util';
 
+// Hast/React compliant attribute converter
 const hastPropertyOfAttr = (attrib: Attr): HastProperties => {
-  switch (attrib.name) {
-    case 'class':
-      return {
-        className: (attrib.nodeValue || '').split(' ').filter(Boolean),
-      };
-    case 'for':
-      return {
-        htmlFor: attrib.nodeValue,
-      };
-    default:
-      return {
-        [attrib.name]: attrib.nodeValue
-      };
+  const { name, nodeValue } = attrib;
+
+  if (name === 'class') {
+    return {
+      className: (nodeValue || '').split(' ').filter(Boolean),
+    };
+  } else if (name === 'for') {
+    return {
+      htmlFor: nodeValue,
+    };
+  } else if (name.startsWith('data-') || name.startsWith('aria-')) {
+    // Just convert to lower case
+    return {
+      [name.toLowerCase()]: nodeValue,
+    };
+  } else if (name.indexOf('-') >= 0) {
+    // To camelCase
+    const camelCased = name.replace(/-([a-z])/g, g => g[1].toUpperCase());
+    return {
+      [camelCased]: nodeValue
+    };
+  } else {
+    return {
+      [name]: nodeValue
+    };
   }
-}
+};
 
 export const elementToHast = (
   element: Element,
