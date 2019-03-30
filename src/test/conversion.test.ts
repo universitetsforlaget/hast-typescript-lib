@@ -2,10 +2,19 @@ import { DOMParser } from 'xmldom';
 
 import * as conversion from '../conversion';
 
+const HTML_SPAN_DOC = new DOMParser().parseFromString(
+  '<span>Some <STRONG>text</STRONG></span>',
+  'text/html'
+);
+
+const HTML_UNENCLOSED_DOC = new DOMParser().parseFromString(
+  'Some <STRONG>text</STRONG>',
+  'text/html'
+);
+
 describe('conversion', () => {
-  it('converts html document', () => {
-    const doc = new DOMParser().parseFromString('<span>Some <STRONG>text</STRONG></span>', 'text/html');
-    const fragment = conversion.domNodeToHastFragment(doc, 'text/html');
+  it('converts full html document to fragment', () => {
+    const fragment = conversion.domNodeToHastFragment(HTML_SPAN_DOC, 'text/html');
 
     expect(fragment).toEqual({
       type: 'element',
@@ -25,6 +34,23 @@ describe('conversion', () => {
           }],
         }],
       }]
+    });
+  });
+
+  it('does not contain unenclosed text elements', () => {
+    const fragment = conversion.domNodeToHastFragment(HTML_UNENCLOSED_DOC, 'text/html');
+
+    expect(fragment).toEqual({
+      type: 'element',
+      tagName: 'fragment',
+      children: [{
+        type: 'element',
+        tagName: 'strong',
+        children: [{
+          type: 'text',
+          value: 'text',
+        }],
+      }],
     });
   });
 });
