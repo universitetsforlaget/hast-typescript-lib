@@ -1,33 +1,33 @@
 import {
-  HastBodyNode, ContentType,
+  HastFragmentNode, ContentType,
 } from './types';
-import { compressBodyNode } from './util';
+import { compressFragmentNode } from './util';
 import { hastChildrenOfNode } from './dom';
 import { hastNodeToUtf8Markup } from './serialization';
 
-/** Convert plaintext string to hast body */
-export const stringToHastBody = (text: string): HastBodyNode => ({
+/** Convert plaintext string to hast fragment */
+export const stringToHastFragment = (text: string): HastFragmentNode => ({
   type: 'element',
-  tagName: 'body',
+  tagName: 'fragment',
   children: [{
     type: 'text',
     value: text,
   }]
 });
 
-/** Convert any dom Element to hast body */
-export const domElementToHastBody = (
+/** Convert any dom Element to hast fragment */
+export const domElementToHastFragment = (
   root: Node,
   contentType: ContentType,
-): HastBodyNode => compressBodyNode({
+): HastFragmentNode => compressFragmentNode({
   type: 'element',
-  tagName: 'body',
+  tagName: 'fragment',
   children: hastChildrenOfNode(root, contentType),
 });
 
-/** Convert any hast body node to "flattened" html5 (body node is stripped) */
-export const hastBodyToFlattenedHtml5 = (body: HastBodyNode): string => {
-  return body.children
-    ? body.children.map(hastNodeToUtf8Markup).join('')
+/** Convert any hast fragment to "flattened" html5 (fragment node is stripped) */
+export const hastFragmentToFlattenedHtml5 = (fragment: HastFragmentNode): string => {
+  return fragment.children
+    ? fragment.children.map(hastNodeToUtf8Markup).join('')
     : '';
 };

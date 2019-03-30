@@ -2,7 +2,7 @@ import {
   HastProperties,
   HastNode,
   HastElementNode,
-  HastBodyNode,
+  HastFragmentNode,
 } from './types';
 
 export const stripHastDebug = (node: HastNode): HastNode => {
@@ -39,9 +39,10 @@ export const compressProperties = (properties?: HastProperties): { properties?: 
   };
 }
 
-export const compressBodyNode = (node: HastBodyNode): HastBodyNode => {
+export const compressFragmentNode = (node: HastFragmentNode): HastFragmentNode => {
   return {
-    ...node,
+    type: 'element',
+    tagName: 'fragment',
     ...compressChildren(node.children),
   };
 };
@@ -63,7 +64,6 @@ export const compressNode = (node: HastNode): HastNode => {
   return compressElementNode(node);
 };
 
-
 /** Remove all unnecessary properties from hast document */
 export const compressDocument = (node: HastNode): HastNode => {
   if (node.type === 'text') {
@@ -74,13 +74,5 @@ export const compressDocument = (node: HastNode): HastNode => {
     ...node,
     ...compressProperties(node.properties),
     ...node.children && compressChildren(node.children.map(compressDocument)),
-  };
-};
-
-export const compressDocumentBody = (node: HastBodyNode): HastBodyNode => {
-  return {
-    type: 'element',
-    tagName: 'body',
-    ...compressChildren(node.children),
   };
 };
