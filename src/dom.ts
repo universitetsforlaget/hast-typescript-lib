@@ -11,6 +11,10 @@ const hastPropertyOfAttr = (attrib: Attr): HastProperties => {
       return {
         className: (attrib.nodeValue || '').split(' ').filter(Boolean),
       };
+    case 'for':
+      return {
+        htmlFor: attrib.nodeValue,
+      };
     default:
       return {
         [attrib.name]: attrib.nodeValue
