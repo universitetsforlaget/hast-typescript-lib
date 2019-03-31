@@ -1,9 +1,9 @@
 import {
-  ContentType,
   HastNode,
   HastProperties
 } from './types';
 import { compressElementNode } from './util';
+import { DeserializationConfig } from './config';
 
 // Hast/React compliant attribute converter
 const hastPropertyOfAttr = (attrib: Attr): HastProperties => {
@@ -37,8 +37,8 @@ const hastPropertyOfAttr = (attrib: Attr): HastProperties => {
 
 export const elementToHast = (
   element: Element,
-  contentType: ContentType,
-): HastNode => {
+  config: DeserializationConfig,
+): HastNode | null => {
   if (element.nodeType === element.TEXT_NODE) {
     return {
       type: 'text',
@@ -47,6 +47,7 @@ export const elementToHast = (
   } else {
     let properties = {};
     for (let i = 0; i < element.attributes.length; i += 1) {
+      const attr = element.attributes[i];
       const property = hastPropertyOfAttr(element.attributes[i]);
       properties = {
         ...properties,
@@ -54,25 +55,31 @@ export const elementToHast = (
       };
     }
 
+    const tagName = config.deserializeTagName(element.tagName);
+
+    if (!tagName) {
+      return null;
+    }
+
     return compressElementNode({
       type: 'element',
-      tagName: contentType === 'text/html' ? element.tagName.toLowerCase() : element.tagName,
+      tagName,
       properties,
-      children: nodeChildrenToHastArray(element, contentType),
+      children: nodeChildrenToHastArray(element, config),
     });
   }
 };
 
 export const nodeToHast = (
   node: Node,
-  contentType: ContentType,
+  config: DeserializationConfig,
 ): HastNode | null => {
   if (node.nodeType === node.TEXT_NODE) {
     return node.nodeValue
       ? { type: 'text', value: node.nodeValue }
       : null;
   } else if (node.nodeType === node.ELEMENT_NODE) {
-    return elementToHast(node as Element, contentType);
+    return elementToHast(node as Element, config);
   }
 
   return null;
@@ -80,13 +87,13 @@ export const nodeToHast = (
 
 export const nodeChildrenToHastArray = (
   node: Node,
-  contentType: ContentType,
+  config: DeserializationConfig,
 ): HastNode[] => {
   const hastNodes: HastNode[] = [];
   if (node.hasChildNodes()) {
     for (let i = 0; i < node.childNodes.length; i += 1) {
       const childNode = node.childNodes[i];
-      const hastNode = nodeToHast(childNode, contentType);
+      const hastNode = nodeToHast(childNode, config);
       if (hastNode) {
         hastNodes.push(hastNode);
       }
