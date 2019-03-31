@@ -23,8 +23,8 @@ const LABEL_DOC = new DOMParser().parseFromString(
   'text/html',
 );
 
-const INPUT_DOC = new DOMParser().parseFromString(
-  '<input minlength="2" />',
+const FORM_DOC = new DOMParser().parseFromString(
+  '<form accept-charset="foo" method="POST" foo="bar"><input minlength="2" /></form>',
   'text/html',
 );
 
@@ -70,12 +70,19 @@ describe('dom', () => {
   });
 
   it('transforms html attribute name to react-compliant camelCase naming', () => {
-    expect(dom.nodeToHast(INPUT_DOC.childNodes[0], html5Config)).toEqual({
+    expect(dom.nodeToHast(FORM_DOC.childNodes[0], html5Config)).toEqual({
       type: 'element',
-      tagName: 'input',
+      tagName: 'form',
       properties: {
-        minLength: '2',
+        method: 'POST',
       },
+      children: [{
+        type: 'element',
+        tagName: 'input',
+        properties: {
+          minLength: '2',
+        },
+      }],
     });
   });
 });
