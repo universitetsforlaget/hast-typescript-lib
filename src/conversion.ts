@@ -14,6 +14,15 @@ export const stringToHast = (text: string): HastTextNode => ({
   value: text,
 });
 
+/** Create a fragment enclosing the given nodes */
+export const createFragment = (
+  ...nodes: HastNode[]
+): HastFragmentNode => compressFragmentNode({
+  type: 'element',
+  tagName: 'fragment',
+  children: nodes,
+});
+
 /** Convert any dom node to hast, if possible */
 export const domNodeToHast = (
   node: Node,
@@ -24,11 +33,9 @@ export const domNodeToHast = (
 export const domNodeToHastFragment = (
   node: Node,
   config: DeserializationConfig,
-): HastFragmentNode => compressFragmentNode({
-  type: 'element',
-  tagName: 'fragment',
-  children: dom.nodeChildrenToHastArray(node, config),
-});
+): HastFragmentNode => createFragment(
+  ...dom.nodeChildrenToHastArray(node, config),
+);
 
 /** Convert hast to html5 string (fragment nodes will be stripped) */
 export const hastToHtml5 = (
