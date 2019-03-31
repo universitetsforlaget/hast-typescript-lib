@@ -72,4 +72,23 @@ describe('serialization', () => {
       '<p class="foo bar">tekst<br/><div data-foo="bar"/><input autocomplete/><img srcset="yo"/><strong>yo</strong></p>'
     );
   });
+
+  it('serializes fragments', () => {
+    const html = hastNodeToUtf8Markup({
+      type: 'element',
+      tagName: 'fragment',
+      children: [{
+        type: 'text',
+        value: 'foo',
+      }, {
+        type: 'element',
+        tagName: 'fragment',
+        children: [{
+          type: 'text',
+          value: 'bar',
+        }]
+      }]
+    }, html5Config);
+    expect(html).toEqual('foobar');
+  });
 });
