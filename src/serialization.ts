@@ -1,4 +1,5 @@
 import { HastNode, HastElementNode, HastProperties } from "./types";
+import { SerializationConfig } from "./config";
 
 const encodeUtf8Text = (text: string): string =>
   text
@@ -9,35 +10,57 @@ const encodeUtf8Text = (text: string): string =>
 const encodeUtf8AttributeValue = (text: string): string =>
   text.replace(/"/g, '&quot;');
 
-const hastPropertiesToUtf8Attributes = (properties?: HastProperties): string[] => {
+const hastPropertiesToUtf8Attributes = (
+  properties: HastProperties | undefined,
+  tagName: string,
+  config: SerializationConfig,
+): string[] => {
   if (!properties) {
     return [];
   }
 
   return Object.keys(properties)
-    .map(key => `${key}="${encodeUtf8AttributeValue(properties[key])}"`);
+    .reduce((attributes, name) => {
+      const serialized = config.serializeAttribute(tagName, name, properties[name]);
+      if (!serialized) return attributes;
+
+      const [attributeName, value] = serialized;
+      return [...attributes, `${attributeName}="${encodeUtf8AttributeValue(value)}"`];
+    }, [] as string[]);
 };
 
-const hastElementNodeToUtf8Markup = (node: HastElementNode): string => {
-  const attributes = hastPropertiesToUtf8Attributes(node.properties);
+const hastElementNodeToUtf8Markup = (
+  node: HastElementNode,
+  config: SerializationConfig,
+): string => {
+  const tagName = config.serializeTagName(node.tagName);
+  if (!tagName) return '';
+
+  const attributes = hastPropertiesToUtf8Attributes(node.properties, node.tagName, config);
+
   if (node.children && node.children.length > 0) {
-    return `<${[node.tagName, ...attributes].join(' ')}>${node.children.map(hastNodeToUtf8Markup).join('')}</${node.tagName}>`;
+    return `<${[tagName, ...attributes].join(' ')}>`
+      + node.children.map(child => hastNodeToUtf8Markup(child, config)).join('')
+      + `</${tagName}>`;
   } else {
-    return `<${[node.tagName, ...attributes].join(' ')}/>`;
+    return `<${[tagName, ...attributes].join(' ')}/>`;
   }
 };
 
-export const hastNodeToUtf8Markup = (node: HastNode): string => {
+export const hastNodeToUtf8Markup = (
+  node: HastNode,
+  config: SerializationConfig,
+): string => {
   if (node.type === 'text') {
     return encodeUtf8Text(node.value);
   }
 
   if (node.tagName === 'fragment') {
     if (node.children) {
-      return node.children.map(hastNodeToUtf8Markup).join('');
+      return node.children.map(child => hastNodeToUtf8Markup(child, config)).join('');
     }
     return '';
   }
 
-  return hastElementNodeToUtf8Markup(node);
+  return hastElementNodeToUtf8Markup(node, config);
 };

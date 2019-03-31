@@ -5,7 +5,11 @@ export type ContentType = 'text/html' | 'application/xml';
 export interface SerializationConfig {
   contentType: ContentType;
   serializeTagName: (name: string) => string | null;
-  serializeAttributeName: (tagName: string, attributeName: string) => string | null;
+  serializeAttribute: (
+    tagName: string,
+    name: string,
+    value: any
+  ) => [string, string] | null;
 };
 
 export interface DeserializationConfig {
@@ -55,8 +59,22 @@ export const html5SerializationConfig = (
 ): SerializationConfig => ({
   contentType: 'text/html',
   serializeTagName: name => name,
-  serializeAttributeName: (tagName, attributeName) => {
-    return attributeName;
+  serializeAttribute: (tagName, name, value) => {
+    if (name === 'className') {
+      return ['class', value.join(' ')];
+    } else if (name === 'htmlFor') {
+      return ['for', `${value}`];
+    } else if (name.startsWith('data-') || name.startsWith('aria-')) {
+      return ['for', `${value}`];
+    } else {
+      const serializedName =
+        attributeMap.toHtml[tagName] && attributeMap.toHtml[tagName][name]
+        || attributeMap.toHtml['*'][name]
+        || null;
+
+      if (!serializedName) return null;
+      return [serializedName, `${value}`];
+    }
   }
 });
 
@@ -100,7 +118,7 @@ export const xmlSerializationConfig = (
 ): SerializationConfig => ({
   contentType: 'application/xml',
   serializeTagName: name => name,
-  serializeAttributeName: name => name,
+  serializeAttribute: (tagName, name, value) => [name, `${value}`],
 });
 
 export const xmlDeserializationConfig = (): DeserializationConfig => ({

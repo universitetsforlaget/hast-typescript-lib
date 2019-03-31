@@ -1,11 +1,15 @@
 import { hastNodeToUtf8Markup } from "../serialization";
+import * as config from '../config';
+
+const htmlAttributeMap = config.compileAttributeMap(require('react-html-attributes'));
+const html5Config = config.html5SerializationConfig(htmlAttributeMap);
 
 describe('serialization', () => {
   it('serializes text node', () => {
     const html = hastNodeToUtf8Markup({
       type: 'text',
       value: '<html tags & stuff>',
-    });
+    }, html5Config);
     expect(html).toEqual(
       '&lt;html tags &amp; stuff&gt;'
     );
@@ -18,7 +22,7 @@ describe('serialization', () => {
       properties: {
         src: 'http://"image"'
       }
-    });
+    }, html5Config);
     expect(html).toEqual(
       '<img src="http://&quot;image&quot;"/>'
     );
@@ -29,7 +33,7 @@ describe('serialization', () => {
       type: 'element',
       tagName: 'p',
       properties: {
-        class: 'yo',
+        className: ['foo', 'bar'],
       },
       children: [{
         type: 'text',
@@ -45,9 +49,9 @@ describe('serialization', () => {
           value: 'yo',
         }]
       }],
-    });
+    }, html5Config);
     expect(html).toEqual(
-      '<p class="yo">tekst<br/><strong>yo</strong></p>'
+      '<p class="foo bar">tekst<br/><strong>yo</strong></p>'
     );
   });
 });

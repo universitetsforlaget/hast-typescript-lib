@@ -6,7 +6,7 @@ import {
 import * as dom from './dom';
 import * as serialization from './serialization';
 import { compressFragmentNode } from './util';
-import { DeserializationConfig } from './config';
+import { DeserializationConfig, SerializationConfig } from './config';
 
 /** Convert plaintext string to hast text node */
 export const stringToHast = (text: string): HastTextNode => ({
@@ -31,6 +31,9 @@ export const domNodeToHastFragment = (
 });
 
 /** Convert hast to html5 string (fragment nodes will be stripped) */
-export const hastToHtml5 = (node: HastNode): string => {
-  return serialization.hastNodeToUtf8Markup(node);
+export const hastToHtml5 = (
+  node: HastNode,
+  config: SerializationConfig,
+): string => {
+  return serialization.hastNodeToUtf8Markup(node, config);
 };
