@@ -1,5 +1,6 @@
 import { HastNode, HastElementNode, HastProperties } from "./types";
 import { SerializationConfig } from "./config";
+import { isText } from "./util";
 
 const encodeUtf8Text = (text: string): string =>
   text
@@ -60,11 +61,11 @@ export const hastNodeToUtf8Markup = (
   node: HastNode,
   config: SerializationConfig,
 ): string => {
-  if (node.type === 'text') {
+  if (isText(node)) {
     return encodeUtf8Text(node.value);
   }
 
-  if (node.tagName === 'fragment') {
+  if (config.isFragment(node)) {
     if (node.children) {
       return node.children.map(child => hastNodeToUtf8Markup(child, config)).join('');
     }

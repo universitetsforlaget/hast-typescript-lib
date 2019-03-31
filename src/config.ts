@@ -1,6 +1,8 @@
-import { HastProperties } from "./types";
+import { HastNode, HastProperties } from "./types";
+import { isElement } from "./util";
 
 export interface SerializationConfig {
+  isFragment: (node: HastNode) => boolean;
   serializeTagName: (name: string) => string | null;
   serializeAttribute: (
     tagName: string,
@@ -58,6 +60,7 @@ export const compileAttributeMap = (
 export const html5SerializationConfig = (
   attributeMap: HtmlAttributeMap,
 ): SerializationConfig => ({
+  isFragment: node => isElement(node) && node.tagName === 'fragment',
   serializeTagName: name => name,
   serializeAttribute: (tagName, name, value) => {
     if (name === 'className') {
@@ -113,6 +116,7 @@ export const html5DeserializationConfig = (
 });
 
 export const xmlSerializationConfig = (): SerializationConfig => ({
+  isFragment: node => false,
   serializeTagName: name => name,
   serializeAttribute: (tagName, name, value) => [name, `${value}`],
 });

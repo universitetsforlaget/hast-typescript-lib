@@ -20,7 +20,7 @@ export const domNodeToHast = (
   config: DeserializationConfig,
 ): HastNode | null => dom.nodeToHast(node, config);
 
-/** Convert a dom node's content to a hast fragment */
+/** Convert a dom node's content (i.e. children) to a hast fragment */
 export const domNodeToHastFragment = (
   node: Node,
   config: DeserializationConfig,

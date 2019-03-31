@@ -1,12 +1,25 @@
 import {
   HastProperties,
   HastNode,
+  HastTextNode,
   HastElementNode,
   HastFragmentNode,
 } from './types';
 
+export const isText = (node: HastNode): node is HastTextNode =>
+  node.type === 'text';
+
+export const isElement = (node: HastNode): node is HastElementNode =>
+  node.type === 'element';
+
+export const hasClass = (node: HastElementNode, className: string): boolean =>
+  node.properties
+  && node.properties.className
+  && node.properties.className.some(name => name === className)
+  || false;
+
 export const stripHastDebug = (node: HastNode): HastNode => {
-  if (node.type === 'text') {
+  if (isText(node)) {
     return node;
   }
 
@@ -57,18 +70,14 @@ export const compressElementNode = (node: HastElementNode): HastElementNode => {
 };
 
 export const compressNode = (node: HastNode): HastNode => {
-  if (node.type === 'text') {
-    return node;
-  }
+  if (isText(node)) return node;
 
   return compressElementNode(node);
 };
 
 /** Remove all unnecessary properties from hast document */
 export const compressDocument = (node: HastNode): HastNode => {
-  if (node.type === 'text') {
-    return node;
-  }
+  if (isText(node)) return node;
 
   return {
     ...node,
