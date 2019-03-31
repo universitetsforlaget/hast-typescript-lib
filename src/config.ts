@@ -1,19 +1,15 @@
 import { HastProperties } from "./types";
 
-export type ContentType = 'text/html' | 'application/xml';
-
 export interface SerializationConfig {
-  contentType: ContentType;
   serializeTagName: (name: string) => string | null;
   serializeAttribute: (
     tagName: string,
     name: string,
     value: any
-  ) => [string, string] | null;
+  ) => [string, string] | string | null;
 };
 
 export interface DeserializationConfig {
-  contentType: ContentType;
   deserializeTagName: (name: string) => string | null;
   deserializeAttribute: (
     tagName: string,
@@ -57,7 +53,6 @@ export const compileAttributeMap = (
 export const html5SerializationConfig = (
   attributeMap: HtmlAttributeMap,
 ): SerializationConfig => ({
-  contentType: 'text/html',
   serializeTagName: name => name,
   serializeAttribute: (tagName, name, value) => {
     if (name === 'className') {
@@ -65,7 +60,7 @@ export const html5SerializationConfig = (
     } else if (name === 'htmlFor') {
       return ['for', `${value}`];
     } else if (name.startsWith('data-') || name.startsWith('aria-')) {
-      return ['for', `${value}`];
+      return [name, `${value}`];
     } else {
       const serializedName =
         attributeMap.toHtml[tagName] && attributeMap.toHtml[tagName][name]
@@ -81,7 +76,6 @@ export const html5SerializationConfig = (
 export const html5DeserializationConfig = (
   attributeMap: HtmlAttributeMap,
 ): DeserializationConfig => ({
-  contentType: 'text/html',
   deserializeTagName: name => name.toLowerCase(),
   deserializeAttribute: (tagName: string, name, value) => {
     if (name === 'class') {
@@ -116,13 +110,11 @@ export const html5DeserializationConfig = (
 export const xmlSerializationConfig = (
 
 ): SerializationConfig => ({
-  contentType: 'application/xml',
   serializeTagName: name => name,
   serializeAttribute: (tagName, name, value) => [name, `${value}`],
 });
 
 export const xmlDeserializationConfig = (): DeserializationConfig => ({
-  contentType: 'application/xml',
   deserializeTagName: name => name,
   deserializeAttribute: (tagName, name, value) => ({ [name]: value }),
 });

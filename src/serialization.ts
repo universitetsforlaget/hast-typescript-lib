@@ -24,7 +24,16 @@ const hastPropertiesToUtf8Attributes = (
       const serialized = config.serializeAttribute(tagName, name, properties[name]);
       if (!serialized) return attributes;
 
+      if (typeof serialized === 'string') {
+        return [...attributes, serialized];
+      }
+
       const [attributeName, value] = serialized;
+
+      if (value === 'true') {
+        return [...attributes, attributeName];
+      }
+
       return [...attributes, `${attributeName}="${encodeUtf8AttributeValue(value)}"`];
     }, [] as string[]);
 };

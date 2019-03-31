@@ -43,6 +43,24 @@ describe('serialization', () => {
         tagName: 'br',
       }, {
         type: 'element',
+        tagName: 'div',
+        properties: {
+          'data-foo': 'bar',
+        },
+      }, {
+        type: 'element',
+        tagName: 'input',
+        properties: {
+          autoComplete: true,
+        },
+      }, {
+        type: 'element',
+        tagName: 'img',
+        properties: {
+          srcSet: 'yo',
+        }
+      }, {
+        type: 'element',
         tagName: 'strong',
         children: [{
           type: 'text',
@@ -51,7 +69,7 @@ describe('serialization', () => {
       }],
     }, html5Config);
     expect(html).toEqual(
-      '<p class="foo bar">tekst<br/><strong>yo</strong></p>'
+      '<p class="foo bar">tekst<br/><div data-foo="bar"/><input autocomplete/><img srcset="yo"/><strong>yo</strong></p>'
     );
   });
 });

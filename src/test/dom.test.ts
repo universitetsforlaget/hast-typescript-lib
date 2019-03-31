@@ -28,6 +28,21 @@ const FORM_DOC = new DOMParser().parseFromString(
   'text/html',
 );
 
+const BOOL_ATTR_DOC = new DOMParser().parseFromString(
+  '<input autocomplete/>',
+  'text/html',
+);
+
+const TEXT_ENTITIES_DOC = new DOMParser().parseFromString(
+  'Bl&aring;b&aelig;rsyltet&oslash;y',
+  'text/html',
+);
+
+const TEXT_UTF8_DOC = new DOMParser().parseFromString(
+  'Blåbærsyltetøy',
+  'text/html',
+);
+
 describe('dom', () => {
   it('does not convert document to hast', () => {
     expect(dom.nodeToHast(XML_DOC, xmlConfig)).toEqual(null);
@@ -83,6 +98,30 @@ describe('dom', () => {
           minLength: '2',
         },
       }],
+    });
+  });
+
+  it('parses "boolean" attributes as string', () => {
+    expect(dom.nodeToHast(BOOL_ATTR_DOC.childNodes[0], html5Config)).toEqual({
+      type: 'element',
+      tagName: 'input',
+      properties: {
+        autoComplete: 'autocomplete',
+      },
+    });
+  });
+
+  it('keeps character entities', () => {
+    expect(dom.nodeToHast(TEXT_ENTITIES_DOC.childNodes[0], html5Config)).toEqual({
+      type: 'text',
+      value: 'Bl&aring;b&aelig;rsyltet&oslash;y',
+    });
+  });
+
+  it('accepts utf-8', () => {
+    expect(dom.nodeToHast(TEXT_UTF8_DOC.childNodes[0], html5Config)).toEqual({
+      type: 'text',
+      value: 'Blåbærsyltetøy',
     });
   });
 });
