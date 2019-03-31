@@ -23,6 +23,11 @@ export interface HtmlAttributeMap {
   toHast: { [tagName: string]: { [ lowercased: string]: string }},
 };
 
+/**
+ * Compile html attribute map, that can mostly correctly convert between HTML and HAST attributes.
+ * Hast attribute names are compatible with attributes used by DOM js APIs (and React).
+ * @param reactHtmlAttributes The default export of npm module 'react-html-attributes'
+ */
 export const compileAttributeMap = (
   reactHtmlAttributes: { [key: string]: string[] },
 ): HtmlAttributeMap => {
@@ -107,9 +112,7 @@ export const html5DeserializationConfig = (
   },
 });
 
-export const xmlSerializationConfig = (
-
-): SerializationConfig => ({
+export const xmlSerializationConfig = (): SerializationConfig => ({
   serializeTagName: name => name,
   serializeAttribute: (tagName, name, value) => [name, `${value}`],
 });
