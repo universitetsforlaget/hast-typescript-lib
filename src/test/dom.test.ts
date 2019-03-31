@@ -3,8 +3,10 @@ import { DOMParser } from 'xmldom';
 import * as dom from '../dom';
 import * as config from '../config';
 
+const htmlAttributeMap = config.compileAttributeMap(require('react-html-attributes'));
+
 const xmlConfig = config.xmlDeserializationConfig();
-const html5Config = config.html5DeserializationConfig();
+const html5Config = config.html5DeserializationConfig(htmlAttributeMap);
 
 const XML_DOC = new DOMParser().parseFromString(
   '<Yo />',
@@ -67,7 +69,7 @@ describe('dom', () => {
     });
   });
 
-  it('does something with attribute', () => {
+  it('transforms html attribute name to react-compliant camelCase naming', () => {
     expect(dom.nodeToHast(INPUT_DOC.childNodes[0], html5Config)).toEqual({
       type: 'element',
       tagName: 'input',

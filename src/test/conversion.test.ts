@@ -3,7 +3,9 @@ import { DOMParser } from 'xmldom';
 import * as conversion from '../conversion';
 import * as config from '../config';
 
-const html5Config = config.html5DeserializationConfig();
+const htmlAttributeMap = config.compileAttributeMap(require('react-html-attributes'));
+
+const html5Config = config.html5DeserializationConfig(htmlAttributeMap);
 
 const HTML_SPAN_DOC = new DOMParser().parseFromString(
   '<span>Some <STRONG>text</STRONG></span>',
