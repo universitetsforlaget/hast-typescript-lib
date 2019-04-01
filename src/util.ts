@@ -1,12 +1,25 @@
 import {
   HastProperties,
   HastNode,
+  HastTextNode,
   HastElementNode,
-  HastBodyNode,
+  HastFragmentNode,
 } from './types';
 
+export const isText = (node: HastNode): node is HastTextNode =>
+  node.type === 'text';
+
+export const isElement = (node: HastNode): node is HastElementNode =>
+  node.type === 'element';
+
+export const hasClass = (node: HastElementNode, className: string): boolean =>
+  node.properties
+  && node.properties.className
+  && node.properties.className.some(name => name === className)
+  || false;
+
 export const stripHastDebug = (node: HastNode): HastNode => {
-  if (node.type === 'text') {
+  if (isText(node)) {
     return node;
   }
 
@@ -39,9 +52,10 @@ export const compressProperties = (properties?: HastProperties): { properties?: 
   };
 }
 
-export const compressBodyNode = (node: HastBodyNode): HastBodyNode => {
+export const compressFragmentNode = (node: HastFragmentNode): HastFragmentNode => {
   return {
-    ...node,
+    type: 'element',
+    tagName: 'fragment',
     ...compressChildren(node.children),
   };
 };
@@ -56,31 +70,18 @@ export const compressElementNode = (node: HastElementNode): HastElementNode => {
 };
 
 export const compressNode = (node: HastNode): HastNode => {
-  if (node.type === 'text') {
-    return node;
-  }
+  if (isText(node)) return node;
 
   return compressElementNode(node);
 };
 
-
 /** Remove all unnecessary properties from hast document */
 export const compressDocument = (node: HastNode): HastNode => {
-  if (node.type === 'text') {
-    return node;
-  }
+  if (isText(node)) return node;
 
   return {
     ...node,
     ...compressProperties(node.properties),
     ...node.children && compressChildren(node.children.map(compressDocument)),
-  };
-};
-
-export const compressDocumentBody = (node: HastBodyNode): HastBodyNode => {
-  return {
-    type: 'element',
-    tagName: 'body',
-    ...compressChildren(node.children),
   };
 };

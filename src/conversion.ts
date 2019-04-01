@@ -1,33 +1,46 @@
 import {
-  HastBodyNode, ContentType,
+  HastNode,
+  HastTextNode,
+  HastFragmentNode,
 } from './types';
-import { compressBodyNode } from './util';
-import { hastChildrenOfNode } from './dom';
-import { hastNodeToUtf8Markup } from './serialization';
+import * as dom from './dom';
+import * as serialization from './serialization';
+import { compressFragmentNode } from './util';
+import { DeserializationConfig, SerializationConfig } from './config';
 
-/** Convert plaintext string to hast body */
-export const stringToHastBody = (text: string): HastBodyNode => ({
-  type: 'element',
-  tagName: 'body',
-  children: [{
-    type: 'text',
-    value: text,
-  }]
+/** Convert plaintext string to hast text node */
+export const stringToHast = (text: string): HastTextNode => ({
+  type: 'text',
+  value: text,
 });
 
-/** Convert any dom Element to hast body */
-export const domElementToHastBody = (
-  root: Node,
-  contentType: ContentType,
-): HastBodyNode => compressBodyNode({
+/** Create a fragment enclosing the given nodes */
+export const createFragment = (
+  ...nodes: HastNode[]
+): HastFragmentNode => compressFragmentNode({
   type: 'element',
-  tagName: 'body',
-  children: hastChildrenOfNode(root, contentType),
+  tagName: 'fragment',
+  children: nodes,
 });
 
-/** Convert any hast body node to "flattened" html5 (body node is stripped) */
-export const hastBodyToFlattenedHtml5 = (body: HastBodyNode): string => {
-  return body.children
-    ? body.children.map(hastNodeToUtf8Markup).join('')
-    : '';
+/** Convert any dom node to hast, if possible */
+export const domNodeToHast = (
+  node: Node,
+  config: DeserializationConfig,
+): HastNode | null => dom.nodeToHast(node, config);
+
+/** Convert a dom node's content (i.e. children) to a hast fragment */
+export const domNodeToHastFragment = (
+  node: Node,
+  config: DeserializationConfig,
+): HastFragmentNode => createFragment(
+  ...dom.nodeChildrenToHastArray(node, config),
+);
+
+/** Convert hast to html5 string (fragment nodes will be stripped) */
+export const hastToHtml5 = (
+  node: HastNode,
+  config: SerializationConfig,
+): string => {
+  return serialization.hastNodeToUtf8Markup(node, config);
 };
