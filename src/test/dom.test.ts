@@ -3,10 +3,8 @@ import { DOMParser } from 'xmldom';
 import * as dom from '../dom';
 import * as config from '../config';
 
-const htmlAttributeMap = config.compileAttributeMap(require('react-html-attributes'));
-
 const xmlConfig = config.xmlDeserializationConfig();
-const html5Config = config.html5DeserializationConfig(htmlAttributeMap);
+const html5Config = config.html5DeserializationConfig();
 
 const XML_DOC = new DOMParser().parseFromString(
   '<Yo />',
@@ -29,7 +27,7 @@ const FORM_DOC = new DOMParser().parseFromString(
 );
 
 const BOOL_ATTR_DOC = new DOMParser().parseFromString(
-  '<input autocomplete/>',
+  '<input autocomplete="on"/>',
   'text/html',
 );
 
@@ -40,6 +38,11 @@ const TEXT_ENTITIES_DOC = new DOMParser().parseFromString(
 
 const TEXT_UTF8_DOC = new DOMParser().parseFromString(
   'Blåbærsyltetøy',
+  'text/html',
+);
+
+const DATA_DOC = new DOMParser().parseFromString(
+  '<div data-foo="bar" />',
   'text/html',
 );
 
@@ -75,7 +78,7 @@ describe('dom', () => {
       tagName: 'label',
       properties: {
         className: ['foo'],
-        htmlFor: 'bar',
+        htmlFor: ['bar'],
       },
       children: [{
         type: 'text',
@@ -89,7 +92,9 @@ describe('dom', () => {
       type: 'element',
       tagName: 'form',
       properties: {
+        acceptCharset: ['foo'],
         method: 'POST',
+        foo: 'bar',
       },
       children: [{
         type: 'element',
@@ -106,7 +111,7 @@ describe('dom', () => {
       type: 'element',
       tagName: 'input',
       properties: {
-        autoComplete: 'autocomplete',
+        autoComplete: ['on'],
       },
     });
   });
@@ -124,4 +129,14 @@ describe('dom', () => {
       value: 'Blåbærsyltetøy',
     });
   });
+
+  it('retains data attribute', () => {
+    expect(dom.nodeToHast(DATA_DOC.childNodes[0], html5Config)).toEqual({
+      type: 'element',
+      tagName: 'div',
+      properties: {
+        'data-foo': 'bar',
+      },
+    })
+  })
 });

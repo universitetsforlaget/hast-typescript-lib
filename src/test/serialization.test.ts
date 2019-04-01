@@ -1,8 +1,7 @@
 import { hastNodeToUtf8Markup } from "../serialization";
 import * as config from '../config';
 
-const htmlAttributeMap = config.compileAttributeMap(require('react-html-attributes'));
-const html5Config = config.html5SerializationConfig(htmlAttributeMap);
+const html5Config = config.html5SerializationConfig();
 
 describe('serialization', () => {
   it('serializes text node', () => {
@@ -51,7 +50,7 @@ describe('serialization', () => {
         type: 'element',
         tagName: 'input',
         properties: {
-          autoComplete: true,
+          autoComplete: 'on',
         },
       }, {
         type: 'element',
@@ -69,7 +68,7 @@ describe('serialization', () => {
       }],
     }, html5Config);
     expect(html).toEqual(
-      '<p class="foo bar">tekst<br/><div data-foo="bar"/><input autocomplete/><img srcset="yo"/><strong>yo</strong></p>'
+      '<p class="foo bar">tekst<br/><div data-foo="bar"/><input autocomplete="on"/><img srcset="yo"/><strong>yo</strong></p>'
     );
   });
 
