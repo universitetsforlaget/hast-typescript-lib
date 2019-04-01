@@ -130,7 +130,7 @@ describe('dom', () => {
     });
   });
 
-  it('retains data attribute', () => {
+  it('retains data attribute untranslated', () => {
     expect(dom.nodeToHast(DATA_DOC.childNodes[0], html5Config)).toEqual({
       type: 'element',
       tagName: 'div',
