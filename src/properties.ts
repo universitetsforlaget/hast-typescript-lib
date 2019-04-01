@@ -100,7 +100,7 @@ export const markupAttributeToHastProperty = (
     return { [property]: value.split(/[\s]+/), };
   }
   if (info.commaSeparated) {
-    return { [property]: value.split(/[,]/), };
+    return { [property]: value.split(/[,]/).map((str: string) => str.trim()), };
   }
   if (info.commaOrSpaceSeparated) {
     return { [property]: value.split(/[\s,]+/), };

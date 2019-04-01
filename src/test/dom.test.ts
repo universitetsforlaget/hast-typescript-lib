@@ -46,6 +46,11 @@ const DATA_DOC = new DOMParser().parseFromString(
   'text/html',
 );
 
+const IMG_DOC = new DOMParser().parseFromString(
+  '<img srcset="a, b , c"/>',
+  'text/html'
+);
+
 describe('dom', () => {
   it('does not convert document to hast', () => {
     expect(dom.nodeToHast(XML_DOC, xmlConfig)).toEqual(null);
@@ -137,6 +142,16 @@ describe('dom', () => {
       properties: {
         'data-foo': 'bar',
       },
-    })
+    });
+  });
+
+  it('parses "list" attributes', () => {
+    expect(dom.nodeToHast(IMG_DOC.childNodes[0], html5Config)).toEqual({
+      type: 'element',
+      tagName: 'img',
+      properties: {
+        srcSet: ['a', 'b', 'c'],
+      },
+    });
   })
 });
