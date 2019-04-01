@@ -27,7 +27,7 @@ const FORM_DOC = new DOMParser().parseFromString(
 );
 
 const BOOL_ATTR_DOC = new DOMParser().parseFromString(
-  '<input autocomplete="on"/>',
+  '<button disabled="true"/>',
   'text/html',
 );
 
@@ -109,9 +109,9 @@ describe('dom', () => {
   it('parses "boolean" attributes as string', () => {
     expect(dom.nodeToHast(BOOL_ATTR_DOC.childNodes[0], html5Config)).toEqual({
       type: 'element',
-      tagName: 'input',
+      tagName: 'button',
       properties: {
-        autoComplete: ['on'],
+        disabled: true,
       },
     });
   });
