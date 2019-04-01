@@ -40,10 +40,10 @@ const hastPropertyToJs = (
   const info = findPropertyInfo(infoSpace, property);
   if (!info) return {};
 
-  if (info.commaSeparated) {
-    return { [property]: value.join(', ') };
-  } else if (info.spaceSeparated) {
+  if (info.spaceSeparated || info.commaOrSpaceSeparated) {
     return { [property]: value.join(' ') };
+  } else if (info.commaSeparated) {
+    return { [property]: value.join(', ') };
   }
 
   return { [property]: value };
