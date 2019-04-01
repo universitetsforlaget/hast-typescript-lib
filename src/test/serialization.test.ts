@@ -56,8 +56,20 @@ describe('serialization', () => {
         type: 'element',
         tagName: 'img',
         properties: {
-          srcSet: 'yo',
+          srcSet: ['foo', 'bar'],
         }
+      }, {
+        type: 'element',
+        tagName: 'button',
+        properties: {
+          disabled: true,
+        },
+      }, {
+        type: 'element',
+        tagName: 'button',
+        properties: {
+          disabled: false,
+        },
       }, {
         type: 'element',
         tagName: 'strong',
@@ -68,7 +80,7 @@ describe('serialization', () => {
       }],
     }, html5Config);
     expect(html).toEqual(
-      '<p class="foo bar">tekst<br/><div data-foo="bar"/><input autocomplete="on"/><img srcset="yo"/><strong>yo</strong></p>'
+      '<p class="foo bar">tekst<br/><div data-foo="bar"/><input autocomplete="on"/><img srcset="foo, bar"/><button disabled/><button/><strong>yo</strong></p>'
     );
   });
 
