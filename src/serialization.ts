@@ -31,10 +31,6 @@ const hastPropertiesToUtf8Attributes = (
 
       const [attributeName, value] = serialized;
 
-      if (value === 'true') {
-        return [...attributes, attributeName];
-      }
-
       return [...attributes, `${attributeName}="${encodeUtf8AttributeValue(value)}"`];
     }, [] as string[]);
 };
