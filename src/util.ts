@@ -40,13 +40,13 @@ export const stripHastDebug = (node: HastNode): HastNode => {
   };
 };
 
-export const compressChildren = (children?: HastNode[]): { children?: HastNode[]} => {
+export const compressChildren = (children?: HastNode[]): { children?: HastNode[] } => {
   return {
     ...children && children.length > 0 && { children }
   };
 }
 
-export const compressProperties = (properties?: HastProperties): { properties?: HastProperties }  => {
+export const compressProperties = (properties?: HastProperties): { properties?: HastProperties } => {
   return {
     ...properties && Object.keys(properties).length && { properties },
   };
@@ -80,7 +80,8 @@ export const compressDocument = (node: HastNode): HastNode => {
   if (isText(node)) return node;
 
   return {
-    ...node,
+    type: node.type,
+    tagName: node.tagName,
     ...compressProperties(node.properties),
     ...node.children && compressChildren(node.children.map(compressDocument)),
   };
