@@ -34,7 +34,7 @@ const hastPropertyToJs = (
   value: any,
 ): { [property: string]: any } => {
   if (property.startsWith('data-') && infoSpace === htmlSpace) {
-    return [property, value];
+    return { [property]: value };
   }
 
   const info = findPropertyInfo(infoSpace, property);
