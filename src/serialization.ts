@@ -39,15 +39,15 @@ const hastElementNodeToUtf8Markup = (
 
   const attributes = hastPropertiesToUtf8Attributes(node.properties, node.tagName, config);
 
-  if (node.children && node.children.length > 0) {
-    return (
-      `<${[tagName, ...attributes].join(' ')}>` +
-      node.children.map((child) => hastNodeToUtf8Markup(child, config)).join('') +
-      `</${tagName}>`
-    );
-  } else {
+  if (config.serializeAsSelfClosing(node)) {
     return `<${[tagName, ...attributes].join(' ')}/>`;
   }
+
+  return (
+    `<${[tagName, ...attributes].join(' ')}>` +
+    (node.children ?? []).map((child) => hastNodeToUtf8Markup(child, config)).join('') +
+    `</${tagName}>`
+  );
 };
 
 export const hastNodeToUtf8Markup = (node: HastNode, config: SerializationConfig): string => {

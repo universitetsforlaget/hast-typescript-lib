@@ -96,7 +96,7 @@ describe('serialization', () => {
       html5Config
     );
     expect(html).toEqual(
-      '<p class="foo bar">tekst<br/><div data-foo="bar"/><input autocomplete="on"/><img srcset="foo, bar"/><button disabled/><button/><strong>yo</strong></p>'
+      '<p class="foo bar">tekst<br/><div data-foo="bar"></div><input autocomplete="on"/><img srcset="foo, bar"/><button disabled></button><button></button><strong>yo</strong></p>'
     );
   });
 
