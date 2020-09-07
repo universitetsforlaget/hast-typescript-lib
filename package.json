@@ -18,7 +18,8 @@
     "jest": "^24.5.0",
     "ts-jest": "^24.0.0",
     "typescript": "^3.3.4000",
-    "xmldom": "^0.1.27"
+    "xmldom": "^0.1.27",
+    "@types/node": "^14.6.4"
   },
   "dependencies": {
     "property-information": "^5.0.1"
