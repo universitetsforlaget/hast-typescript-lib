@@ -1,69 +1,81 @@
-import { HastNode, HastElementNode, HastProperties } from "./types";
-import { SerializationConfig } from "./config";
-import { isText } from "./util";
+import { HastNode, HastElementNode, HastProperties } from './types';
+import { SerializationConfig } from './config';
+import { isText } from './util';
+
+const voidTags: Record<string, true> = {
+  area: true,
+  base: true,
+  br: true,
+  col: true,
+  embed: true,
+  hr: true,
+  img: true,
+  input: true,
+  keygen: true,
+  link: true,
+  meta: true,
+  param: true,
+  source: true,
+  track: true,
+  wbr: true,
+};
 
 const encodeUtf8Text = (text: string): string =>
-  text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-const encodeUtf8AttributeValue = (text: string): string =>
-  text.replace(/"/g, '&quot;');
+const encodeUtf8AttributeValue = (text: string): string => text.replace(/"/g, '&quot;');
 
 const hastPropertiesToUtf8Attributes = (
   properties: HastProperties | undefined,
   tagName: string,
-  config: SerializationConfig,
+  config: SerializationConfig
 ): string[] => {
   if (!properties) {
     return [];
   }
 
-  return Object.keys(properties)
-    .reduce((attributes, name) => {
-      const serialized = config.serializeAttribute(tagName, name, properties[name]);
-      if (!serialized) return attributes;
+  return Object.keys(properties).reduce((attributes, name) => {
+    const serialized = config.serializeAttribute(tagName, name, properties[name]);
+    if (!serialized) return attributes;
 
-      if (typeof serialized === 'string') {
-        return [...attributes, serialized];
-      }
+    if (typeof serialized === 'string') {
+      return [...attributes, serialized];
+    }
 
-      const [attributeName, value] = serialized;
+    const [attributeName, value] = serialized;
 
-      return [...attributes, `${attributeName}="${encodeUtf8AttributeValue(value)}"`];
-    }, [] as string[]);
+    return [...attributes, `${attributeName}="${encodeUtf8AttributeValue(value)}"`];
+  }, [] as string[]);
 };
 
 const hastElementNodeToUtf8Markup = (
   node: HastElementNode,
-  config: SerializationConfig,
+  config: SerializationConfig
 ): string => {
   const tagName = config.serializeTagName(node.tagName);
   if (!tagName) return '';
 
   const attributes = hastPropertiesToUtf8Attributes(node.properties, node.tagName, config);
 
-  if (node.children && node.children.length > 0) {
-    return `<${[tagName, ...attributes].join(' ')}>`
-      + node.children.map(child => hastNodeToUtf8Markup(child, config)).join('')
-      + `</${tagName}>`;
-  } else {
+  if (voidTags[tagName]) {
     return `<${[tagName, ...attributes].join(' ')}/>`;
   }
+
+  return (
+    `<${[tagName, ...attributes].join(' ')}>` +
+    (node.children ?? []).map((child) => hastNodeToUtf8Markup(child, config)).join('') +
+    `</${tagName}>`
+  );
 };
 
-export const hastNodeToUtf8Markup = (
-  node: HastNode,
-  config: SerializationConfig,
-): string => {
+export const hastNodeToUtf8Markup = (node: HastNode, config: SerializationConfig): string => {
   if (isText(node)) {
     return encodeUtf8Text(node.value);
   }
 
   if (config.isFragment(node)) {
     if (node.children) {
-      return node.children.map(child => hastNodeToUtf8Markup(child, config)).join('');
+      return node.children.map((child) => hastNodeToUtf8Markup(child, config)).join('');
     }
     return '';
   }
