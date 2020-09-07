@@ -6,50 +6,35 @@ import * as config from '../config';
 const xmlConfig = config.xmlDeserializationConfig();
 const html5Config = config.html5DeserializationConfig();
 
-const XML_DOC = new DOMParser().parseFromString(
-  '<Yo />',
-  'text/xml',
-);
+const XML_DOC = new DOMParser().parseFromString('<Yo />', 'text/xml');
 
 const COMMENT_DOC = new DOMParser().parseFromString(
   '<span>foo <!-- comment --> bar</span>',
-  'text/html',
+  'text/html'
 );
 
 const LABEL_DOC = new DOMParser().parseFromString(
   '<label class="foo" for="bar">baz</label>',
-  'text/html',
+  'text/html'
 );
 
 const FORM_DOC = new DOMParser().parseFromString(
   '<form accept-charset="foo" method="POST" foo="bar"><input minlength="2" /></form>',
-  'text/html',
+  'text/html'
 );
 
-const BOOL_ATTR_DOC = new DOMParser().parseFromString(
-  '<button disabled="true"/>',
-  'text/html',
-);
+const BOOL_ATTR_DOC = new DOMParser().parseFromString('<button disabled="true"/>', 'text/html');
 
 const TEXT_ENTITIES_DOC = new DOMParser().parseFromString(
   'Bl&aring;b&aelig;rsyltet&oslash;y',
-  'text/html',
-);
-
-const TEXT_UTF8_DOC = new DOMParser().parseFromString(
-  'Blåbærsyltetøy',
-  'text/html',
-);
-
-const DATA_DOC = new DOMParser().parseFromString(
-  '<div data-foo="bar" />',
-  'text/html',
-);
-
-const IMG_DOC = new DOMParser().parseFromString(
-  '<img srcset="a, b , c"/>',
   'text/html'
 );
+
+const TEXT_UTF8_DOC = new DOMParser().parseFromString('Blåbærsyltetøy', 'text/html');
+
+const DATA_DOC = new DOMParser().parseFromString('<div data-foo="bar" />', 'text/html');
+
+const IMG_DOC = new DOMParser().parseFromString('<img srcset="a, b , c"/>', 'text/html');
 
 describe('dom', () => {
   it('does not convert document to hast', () => {
@@ -67,13 +52,16 @@ describe('dom', () => {
     expect(dom.nodeToHast(COMMENT_DOC.childNodes[0], html5Config)).toEqual({
       type: 'element',
       tagName: 'span',
-      children: [{
-        type: 'text',
-        value: 'foo ',
-      }, {
-        type: 'text',
-        value: ' bar',
-      }],
+      children: [
+        {
+          type: 'text',
+          value: 'foo ',
+        },
+        {
+          type: 'text',
+          value: ' bar',
+        },
+      ],
     });
   });
 
@@ -85,10 +73,12 @@ describe('dom', () => {
         className: ['foo'],
         htmlFor: ['bar'],
       },
-      children: [{
-        type: 'text',
-        value: 'baz',
-      }],
+      children: [
+        {
+          type: 'text',
+          value: 'baz',
+        },
+      ],
     });
   });
 
@@ -101,13 +91,15 @@ describe('dom', () => {
         method: 'POST',
         foo: 'bar',
       },
-      children: [{
-        type: 'element',
-        tagName: 'input',
-        properties: {
-          minLength: '2',
+      children: [
+        {
+          type: 'element',
+          tagName: 'input',
+          properties: {
+            minLength: '2',
+          },
         },
-      }],
+      ],
     });
   });
 
@@ -153,5 +145,5 @@ describe('dom', () => {
         srcSet: ['a', 'b', 'c'],
       },
     });
-  })
+  });
 });

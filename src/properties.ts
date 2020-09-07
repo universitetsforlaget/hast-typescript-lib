@@ -1,4 +1,4 @@
-import { HastProperties } from "./types";
+import { HastProperties } from './types';
 
 const info = require('property-information');
 
@@ -23,15 +23,13 @@ interface PropertyInfo {
 export const htmlSpace: InfoSpace = info.html;
 export const xmlSpace: InfoSpace = info.xml;
 
-const findPropertyInfo = (
-  infoSpace: InfoSpace,
-  propertyOrAttr: string
-): PropertyInfo | null => info.find(infoSpace, propertyOrAttr) || null;
+const findPropertyInfo = (infoSpace: InfoSpace, propertyOrAttr: string): PropertyInfo | null =>
+  info.find(infoSpace, propertyOrAttr) || null;
 
 const hastPropertyToJs = (
   infoSpace: InfoSpace,
   property: string,
-  value: any,
+  value: any
 ): { [property: string]: any } => {
   if (property.startsWith('data-') && infoSpace === htmlSpace) {
     return { [property]: value };
@@ -52,7 +50,7 @@ const hastPropertyToJs = (
 export const hastPropertyToMarkup = (
   infoSpace: InfoSpace,
   property: string,
-  value: any,
+  value: any
 ): [string, string] | string | null => {
   if (property.startsWith('data-') && infoSpace === htmlSpace) {
     return [property, value];
@@ -66,7 +64,7 @@ export const hastPropertyToMarkup = (
   if (info.boolean || info.overloadedBoolean) {
     return value ? attribute : null;
   }
-  if (info.spaceSeparated || info.commaOrSpaceSeparated)  {
+  if (info.spaceSeparated || info.commaOrSpaceSeparated) {
     return [attribute, typeof value === 'string' ? value : value.join(' ')];
   }
   if (info.commaSeparated) {
@@ -79,7 +77,7 @@ export const hastPropertyToMarkup = (
 export const markupAttributeToHastProperty = (
   infoSpace: InfoSpace,
   attribute: string,
-  value: any,
+  value: any
 ): HastProperties => {
   if (attribute.startsWith('data-') && infoSpace === htmlSpace) {
     return { [attribute]: value };
@@ -91,22 +89,22 @@ export const markupAttributeToHastProperty = (
   const { property } = info;
 
   if (info.boolean || info.overloadedBoolean) {
-    return { [property]: true, };
+    return { [property]: true };
   }
   if (info.booleanish) {
     return { [property]: value.toLowerCase().includes('false') ? false : true };
   }
   if (info.spaceSeparated) {
-    return { [property]: value.split(/[\s]+/), };
+    return { [property]: value.split(/[\s]+/) };
   }
   if (info.commaSeparated) {
-    return { [property]: value.split(/[,]/).map((str: string) => str.trim()), };
+    return { [property]: value.split(/[,]/).map((str: string) => str.trim()) };
   }
   if (info.commaOrSpaceSeparated) {
-    return { [property]: value.split(/[\s,]+/), };
+    return { [property]: value.split(/[\s,]+/) };
   }
 
-  return { [property]: value, };
+  return { [property]: value };
 };
 
 export const hastPropertiesToJs = (
@@ -115,8 +113,11 @@ export const hastPropertiesToJs = (
 ): { [property: string]: any } | null => {
   if (!properties) return null;
 
-  return Object.keys(properties).reduce((agg, property) => ({
-    ...agg,
-    ...hastPropertyToJs(infoSpace, property, properties[property]),
-  }), {});
+  return Object.keys(properties).reduce(
+    (agg, property) => ({
+      ...agg,
+      ...hastPropertyToJs(infoSpace, property, properties[property]),
+    }),
+    {}
+  );
 };

@@ -22,21 +22,28 @@ describe('conversion', () => {
     expect(fragment).toEqual({
       type: 'element',
       tagName: 'fragment',
-      children: [{
-        type: 'element',
-        tagName: 'span',
-        children: [{
-          type: 'text',
-          value: 'Some ',
-        }, {
+      children: [
+        {
           type: 'element',
-          tagName: 'strong',
-          children: [{
-            type: 'text',
-            value: 'text',
-          }],
-        }],
-      }]
+          tagName: 'span',
+          children: [
+            {
+              type: 'text',
+              value: 'Some ',
+            },
+            {
+              type: 'element',
+              tagName: 'strong',
+              children: [
+                {
+                  type: 'text',
+                  value: 'text',
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
   });
 
@@ -46,14 +53,18 @@ describe('conversion', () => {
     expect(fragment).toEqual({
       type: 'element',
       tagName: 'fragment',
-      children: [{
-        type: 'element',
-        tagName: 'strong',
-        children: [{
-          type: 'text',
-          value: 'text',
-        }],
-      }],
+      children: [
+        {
+          type: 'element',
+          tagName: 'strong',
+          children: [
+            {
+              type: 'text',
+              value: 'text',
+            },
+          ],
+        },
+      ],
     });
   });
 });

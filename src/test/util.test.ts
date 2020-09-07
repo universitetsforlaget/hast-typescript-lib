@@ -1,4 +1,4 @@
-import { compressDocument } from "../util";
+import { compressDocument } from '../util';
 
 describe('util', () => {
   it('compresses document correctly', () => {
@@ -11,8 +11,8 @@ describe('util', () => {
           type: 'element',
           tagName: 'child',
           properties: {},
-        }
-      ]
+        },
+      ],
     });
 
     const expectedDocument = {
@@ -22,10 +22,10 @@ describe('util', () => {
         {
           type: 'element',
           tagName: 'child',
-        }
-      ]
+        },
+      ],
     };
 
     expect(compressedDocument).toEqual(expectedDocument);
-  })
-})
+  });
+});

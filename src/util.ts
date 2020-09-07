@@ -1,56 +1,52 @@
-import {
-  HastProperties,
-  HastNode,
-  HastTextNode,
-  HastElementNode,
-  HastFragmentNode,
-} from './types';
+import { HastProperties, HastNode, HastTextNode, HastElementNode, HastFragmentNode } from './types';
 
-export const isText = (node: HastNode): node is HastTextNode =>
-  node.type === 'text';
+export const isText = (node: HastNode): node is HastTextNode => node.type === 'text';
 
-export const isElement = (node: HastNode): node is HastElementNode =>
-  node.type === 'element';
+export const isElement = (node: HastNode): node is HastElementNode => node.type === 'element';
 
 export const hasClass = (node: HastElementNode, className: string): boolean =>
-  node.properties
-  && node.properties.className
-  && node.properties.className.some(name => name === className)
-  || false;
+  (node.properties &&
+    node.properties.className &&
+    node.properties.className.some((name) => name === className)) ||
+  false;
 
 export const stripHastDebug = (node: HastNode): HastNode => {
   if (isText(node)) {
     return node;
   }
 
-  const properties = node.properties && Object.keys(node.properties).reduce((agg, key) => {
-    if (key !== '__source') {
-      return {
-        ...agg,
-        [key]: node.properties![key],
+  const properties =
+    node.properties &&
+    Object.keys(node.properties).reduce((agg, key) => {
+      if (key !== '__source') {
+        return {
+          ...agg,
+          [key]: node.properties![key],
+        };
       }
-    }
-    return agg;
-  }, {});
+      return agg;
+    }, {});
 
   return {
     ...node,
-    ...node.children && { children: node.children.map(stripHastDebug) },
-    ...properties && { properties },
+    ...(node.children && { children: node.children.map(stripHastDebug) }),
+    ...(properties && { properties }),
   };
 };
 
 export const compressChildren = (children?: HastNode[]): { children?: HastNode[] } => {
   return {
-    ...children && children.length > 0 && { children }
+    ...(children && children.length > 0 && { children }),
   };
-}
+};
 
-export const compressProperties = (properties?: HastProperties): { properties?: HastProperties } => {
+export const compressProperties = (
+  properties?: HastProperties
+): { properties?: HastProperties } => {
   return {
-    ...properties && Object.keys(properties).length && { properties },
+    ...(properties && Object.keys(properties).length && { properties }),
   };
-}
+};
 
 export const compressFragmentNode = (node: HastFragmentNode): HastFragmentNode => {
   return {
@@ -83,6 +79,6 @@ export const compressDocument = (node: HastNode): HastNode => {
     type: node.type,
     tagName: node.tagName,
     ...compressProperties(node.properties),
-    ...node.children && compressChildren(node.children.map(compressDocument)),
+    ...(node.children && compressChildren(node.children.map(compressDocument))),
   };
 };

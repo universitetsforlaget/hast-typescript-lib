@@ -2,15 +2,12 @@ import { HastNode } from './types';
 import { compressElementNode } from './util';
 import { DeserializationConfig } from './config';
 
-export const elementToHast = (
-  element: Element,
-  config: DeserializationConfig,
-): HastNode | null => {
+export const elementToHast = (element: Element, config: DeserializationConfig): HastNode | null => {
   if (element.nodeType === element.TEXT_NODE) {
     return {
       type: 'text',
-      value: element.nodeValue!
-    }
+      value: element.nodeValue!,
+    };
   } else {
     const tagName = config.deserializeTagName(element.tagName);
     if (!tagName) {
@@ -36,14 +33,9 @@ export const elementToHast = (
   }
 };
 
-export const nodeToHast = (
-  node: Node,
-  config: DeserializationConfig,
-): HastNode | null => {
+export const nodeToHast = (node: Node, config: DeserializationConfig): HastNode | null => {
   if (node.nodeType === node.TEXT_NODE) {
-    return node.nodeValue
-      ? { type: 'text', value: node.nodeValue }
-      : null;
+    return node.nodeValue ? { type: 'text', value: node.nodeValue } : null;
   } else if (node.nodeType === node.ELEMENT_NODE) {
     return elementToHast(node as Element, config);
   }
@@ -51,10 +43,7 @@ export const nodeToHast = (
   return null;
 };
 
-export const nodeChildrenToHastArray = (
-  node: Node,
-  config: DeserializationConfig,
-): HastNode[] => {
+export const nodeChildrenToHastArray = (node: Node, config: DeserializationConfig): HastNode[] => {
   const hastNodes: HastNode[] = [];
   if (node.hasChildNodes()) {
     for (let i = 0; i < node.childNodes.length; i += 1) {
