@@ -7,10 +7,7 @@ describe('properties', () => {
       'data-foo': { foo: 'bar' },
     };
 
-    expect(properties.hastPropertiesToJs(
-      properties.htmlSpace,
-      hastHtmlProperties,
-    )).toEqual({
+    expect(properties.hastPropertiesToJs(properties.htmlSpace, hastHtmlProperties)).toEqual({
       className: 'a b',
       'data-foo': { foo: 'bar' },
     });

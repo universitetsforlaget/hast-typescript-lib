@@ -1,6 +1,6 @@
 export interface HastProperties {
-  className?: string[],
-  [key: string]: any,
+  className?: string[];
+  [key: string]: any;
 }
 
 export interface HastTextNode {
