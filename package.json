@@ -1,6 +1,6 @@
 {
   "name": "@universitetsforlaget/hast",
-  "version": "0.4.6-SNAPSHOT",
+  "version": "0.4.6",
   "description": "Hypertext Abstract Syntax Tree utilities",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
